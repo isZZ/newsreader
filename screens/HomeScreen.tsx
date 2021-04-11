@@ -15,7 +15,7 @@ function HomeScreen(){
       <ScrollView>
         {news.map(item => (
           <Card key={ item.id }>
-            <Card.Cover source={{ uri: item.urlToImage }} />
+            {item.urlToImage && <Card.Cover source={{ uri: item.urlToImage }} />}
             <Card.Content>
               <Title>{ item.title }</Title>
               <Subheading>{item.author}</Subheading>
