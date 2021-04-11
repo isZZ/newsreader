@@ -1,3 +1,4 @@
+import { toJS } from "mobx";
 import { cast, Instance, SnapshotOut, types } from "mobx-state-tree"
 import { INewsItem, INewsItemSnapshot, NewsItemModel } from "./NewsItemModel"
 
@@ -11,9 +12,13 @@ export const RootStoreModel = types.model("RootStoreModel").props({
     addNewsItem(newsItem:INewsItemSnapshot) {
         self.news.push(newsItem);
     },
-    refreshNewsItems(newsItems:Array<INewsItemSnapshot>){
-      newsItems.length = 0;
-      newsItems.forEach((item:INewsItemSnapshot) => self.news.push(item));
+    refreshNewsItems(items:Array<INewsItemSnapshot>){
+      self.news.splice(0, self.news.length);
+      items.forEach((item:INewsItemSnapshot) => {
+        self.news.push(item);
+      });
+      console.log(toJS(self.news));
+      //items.forEach((item:INewsItemSnapshot) => self.news.push(item));
     }
 }));
 

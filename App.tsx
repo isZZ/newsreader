@@ -8,7 +8,9 @@
  * @format
  */
 
-import React from 'react';
+import React, { useEffect } from 'react';
+import dotenv from 'dotenv';
+import axios from 'axios';
 import {
   SafeAreaView,
   ScrollView,
@@ -34,8 +36,13 @@ import {createStackNavigator} from '@react-navigation/stack';
 import HomeScreen from './screens/HomeScreen';
 import NewsItemScreen from './screens/NewsItemScreen';
 import { NewsItemModel } from './models/NewsItemModel';
+import {API_KEY} from 'react-native-dotenv';
+import { toJS } from 'mobx';
+
+
 
 const App = () => {
+ 
   const Provider = useProvider(RootStoreModel);
   const appStore = useCreateStore(RootStoreModel, {news: []});
   const isDarkMode = useColorScheme() === 'dark';
@@ -46,14 +53,26 @@ const App = () => {
 
   const Stack = createStackNavigator();
 
-  appStore.addNewsItem({
-    id: 1,
-    author: 'Me',
-    title: 'M News Item',
-    url: 'http://news.com',
-    urlToImage: 'http://news.com',
-    publishedAt: Date.now(),
-    content: 'Some article'
+  // appStore.addNewsItem({
+  //   id: 1,
+  //   author: 'Me',
+  //   title: 'M News Item',
+  //   url: 'http://news.com',
+  //   urlToImage: 'http://news.com',
+  //   publishedAt: Date.now(),
+  //   content: 'Some article',
+  //   description:'Some type of description'
+  // });
+
+  useEffect(async () => {
+    const result = await axios(
+      'https://newsapi.org/v2/top-headlines?country=au&apiKey='+API_KEY,
+    );
+
+    if(result.data.status === 'ok'){
+      appStore.refreshNewsItems(result.data.articles);
+    }
+
   });
 
   return (
