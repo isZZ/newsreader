@@ -32,7 +32,7 @@ function HomeScreen(){
           <Title style={ styles.title}>{ item.title }</Title>
           <Subheading>{item.author}</Subheading>
           <Paragraph>{item.description}</Paragraph>
-          <OpenURLButton url={item.url} title={ "Read" }><Text>Open Up</Text></OpenURLButton>
+          <OpenURLButton url={item.url} title={ "READ IT" }><Text>Open Up</Text></OpenURLButton>
         </Card.Content>
       </Card>
     );
