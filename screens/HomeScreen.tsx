@@ -1,7 +1,7 @@
 import { useStore } from 'mobx-store-provider';
 import { observer } from "mobx-react-lite";
-import React, { useState } from 'react';
-import { FlatList, StyleSheet, Text, View } from 'react-native';
+import React, { useCallback, useState } from 'react';
+import { Alert, FlatList, Linking, StyleSheet, Text, View } from 'react-native';
 import { NewsItemModel } from '../models/NewsItemModel';
 import {RootStoreModel} from '../models/RootStoreModel';
 import { Avatar, Button, Card, Title, Paragraph, Subheading, Chip } from 'react-native-paper';
@@ -32,6 +32,7 @@ function HomeScreen(){
           <Title style={ styles.title}>{ item.title }</Title>
           <Subheading>{item.author}</Subheading>
           <Paragraph>{item.description}</Paragraph>
+          <OpenURLButton url={item.url} title={ "Read" }><Text>Open Up</Text></OpenURLButton>
         </Card.Content>
       </Card>
     );
@@ -41,10 +42,9 @@ function HomeScreen(){
     <View style={styles.screen}>
       <SafeAreaView>
       <ScrollView horizontal={ true }>
-        <Text>{sourceIndex}</Text>
         <View style={styles.chips}>
-        <SourceChip name={ 'All' } onPress={ () => setSourceIndex(-1) } />
-        {sources.map((source, i) => <SourceChip name={ source } onPress={ () => setSourceIndex(i) } />)}
+        <SourceChip name={ 'All' } selected={ sourceIndex < 0 } onPress={ () => setSourceIndex(-1) } />
+        {sources.map((source, i) => <SourceChip name={ source } selected={ sourceIndex === i } onPress={ () => setSourceIndex(i) } />)}
         </View>
       </ScrollView>
       <FlatList
@@ -52,6 +52,7 @@ function HomeScreen(){
         renderItem={renderItem}
         keyExtractor={(item) => item.id}
         extraData={sourceIndex}
+        style={ styles.flatList }
       />
 
 
@@ -63,9 +64,26 @@ function HomeScreen(){
   );
 }
 
-const SourceChip = ({name, onPress}) => (
-  <Chip style={styles.chip} mode={'outlined'} onPress={onPress}>{ name }</Chip>
+const SourceChip = ({name, onPress, selected}) => (
+  <Chip style={[styles.chip, selected && styles.chipSelected]} mode={'outlined'} onPress={onPress}>{ name }</Chip>
 );
+
+const OpenURLButton = ({ url, title }) => {
+  const handlePress = useCallback(async () => {
+
+    const supported = await Linking.canOpenURL(url);
+
+    if (supported) {
+      await Linking.openURL(url);
+    }
+  }, [url]);
+
+  return(
+    <Card.Actions>
+      <Button style={ styles.openLinkBtn } onPress={handlePress}>Read</Button>
+    </Card.Actions>
+  );
+};
 
 const styles = StyleSheet.create({
   coverImage:{
@@ -95,6 +113,15 @@ const styles = StyleSheet.create({
   },
   chip: {
     marginRight: 5,
+  },
+  chipSelected:{
+    backgroundColor: '#3ED993',
+  },
+  flatList: {
+    marginBottom: 120
+  },
+  openLinkBtn:{
+    marginLeft: -15
   }
 });
 

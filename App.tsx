@@ -53,16 +53,7 @@ const App = () => {
 
   const Stack = createStackNavigator();
 
-  // appStore.addNewsItem({
-  //   id: 1,
-  //   author: 'Me',
-  //   title: 'M News Item',
-  //   url: 'http://news.com',
-  //   urlToImage: 'http://news.com',
-  //   publishedAt: Date.now(),
-  //   content: 'Some article',
-  //   description:'Some type of description'
-  // });
+  
 
   useEffect(async () => {
     const result = await axios(
@@ -83,16 +74,6 @@ const App = () => {
           <Stack.Screen name="NewsItem" component={NewsItemScreen} />
         </Stack.Navigator>
       </NavigationContainer>
-      {/* <SafeAreaView style={backgroundStyle}>
-        <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-            <Route path={`${match.path}/:topicId`} component={Topic} />
-        <Route path={`${match.path}/:id`} component={ NewsScreen } />
-          </View>
-      </SafeAreaView> */}
     </Provider>
   );
 };
