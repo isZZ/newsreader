@@ -29,6 +29,11 @@ import {
 
 import {useCreateStore, useProvider} from 'mobx-store-provider';
 import {RootStoreModel} from './models/RootStoreModel';
+import {NavigationContainer} from '@react-navigation/native';
+import {createStackNavigator} from '@react-navigation/stack';
+import HomeScreen from './screens/HomeScreen';
+import NewsItemScreen from './screens/NewsItemScreen';
+import { NewsItemModel } from './models/NewsItemModel';
 
 const App = () => {
   const Provider = useProvider(RootStoreModel);
@@ -39,15 +44,36 @@ const App = () => {
     backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
   };
 
+  const Stack = createStackNavigator();
+
+  appStore.addNewsItem({
+    id: 1,
+    author: 'Me',
+    title: 'M News Item',
+    url: 'http://news.com',
+    urlToImage: 'http://news.com',
+    publishedAt: Date.now(),
+    content: 'Some article'
+  });
+
   return (
     <Provider value={appStore}>
-      <SafeAreaView style={backgroundStyle}>
+      <NavigationContainer>
+        <Stack.Navigator>
+          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen name="NewsItem" component={NewsItemScreen} />
+        </Stack.Navigator>
+      </NavigationContainer>
+      {/* <SafeAreaView style={backgroundStyle}>
         <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
         <View
           style={{
             backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}></View>
-      </SafeAreaView>
+          }}>
+            <Route path={`${match.path}/:topicId`} component={Topic} />
+        <Route path={`${match.path}/:id`} component={ NewsScreen } />
+          </View>
+      </SafeAreaView> */}
     </Provider>
   );
 };
